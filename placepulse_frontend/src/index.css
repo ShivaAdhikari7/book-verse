@@ -25,7 +25,7 @@ select {
   font: inherit;
 }
 
-ul,
+/* ul,
 ol {
   list-style: none;
 }
@@ -33,7 +33,7 @@ ol {
 button {
   border: none !important;
   cursor: pointer;
-}
+} */
 
 @media (max-width: 576px) {
   html {
