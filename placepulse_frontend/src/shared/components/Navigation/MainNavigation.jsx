@@ -7,27 +7,30 @@ import SideDrawer from "./SideDrawer";
 import Backdrop from "../UI/Backdrop";
 
 const MainNavigation = () => {
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(true);
 
-  const openDrawer = () => {
+  const openDrawerHandler = () => {
     setIsDrawerOpen(true);
   };
-  const closeDrawer = () => {
+  const closeDrawerHandler = () => {
     setIsDrawerOpen(false);
   };
 
   return (
     <>
-      {isDrawerOpen && <Backdrop onClick={closeDrawer} />}
+      {isDrawerOpen && <Backdrop onClick={closeDrawerHandler} />}
       {isDrawerOpen && (
-        <SideDrawer>
+        <SideDrawer onClick={closeDrawerHandler}>
           <nav className="main-navigation_drawer-nav">
             <NavLinks />
           </nav>
         </SideDrawer>
       )}
       <MainHeader>
-        <button className="main-navigation_menu-btn" onClick={openDrawer}>
+        <button
+          className="main-navigation_menu-btn"
+          onClick={openDrawerHandler}
+        >
           <span />
           <span />
           <span />
