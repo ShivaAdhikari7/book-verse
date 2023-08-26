@@ -1,26 +1,56 @@
+import { useState } from "react";
 import Card from "../../shared/components/UI/Card";
+import Button from "../../shared/components/FormElements/Button";
 import "./PlaceItem.css";
+import Modal from "../../shared/components/UI/Modal";
+
 const PlaceItem = (props) => {
+  const [showMap, setShowMap] = useState(false);
+
+  const showMapHandler = () => {
+    setShowMap(true);
+  };
+  const closeMapHandler = () => {
+    setShowMap(false);
+  };
+
   return (
-    <li className="place-item">
-      <Card className="place-item__content">
-        <div className="place-item__image">
-          <img src={props.image} alt={props.title} />
-        </div>
+    <>
+      {showMap && (
+        <Modal
+          onCancel={closeMapHandler}
+          header={props.address}
+          contentClass="place-item__modal-content"
+          footerClass="place-item__modal-actions"
+          footer={<Button onClick={closeMapHandler}>Close</Button>}
+        >
+          <div className="map-container">
+            <h2>This is the map</h2>
+          </div>
+        </Modal>
+      )}
+      <li className="place-item">
+        <Card className="place-item__content">
+          <div className="place-item__image">
+            <img src={props.image} alt={props.title} />
+          </div>
 
-        <div className="place-item__info ">
-          <h2>{props.title}</h2>
-          <h2>{props.address}</h2>
-          <h2>{props.description}</h2>
-        </div>
+          <div className="place-item__info ">
+            <h2>{props.title}</h2>
+            <h2>{props.address}</h2>
+            <h2>{props.description}</h2>
+          </div>
 
-        <div className="place-item__actions">
-          <button>View on Map</button>
-          <button>Edit</button>
-          <button>Delete</button>
-        </div>
-      </Card>
-    </li>
+          <div className="place-item__actions">
+            <Button inverse onClick={showMapHandler}>
+              View on Map
+            </Button>
+            <Button to={`places/${props.id}`}>Edit</Button>
+            <Button danger>Delete</Button>
+          </div>
+        </Card>
+      </li>
+    </>
   );
 };
 
