@@ -3,7 +3,7 @@ import UserList from "../components/UserList";
 const User = () => {
   const Users = [
     {
-      id: 1,
+      id: "u1",
       name: "Shiva Adhikari",
       places: 3,
       image:
