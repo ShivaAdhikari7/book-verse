@@ -6,6 +6,7 @@ const {
   getPlaceById,
   getPlacesByUserId,
   deletePlace,
+  updatePlace,
 } = require("../controllers/place-controller");
 const fileUpload = require("../middleware/file-upload");
 const checkAuth = require("../middleware/check-auth");
@@ -26,5 +27,10 @@ router.post(
     check("address").not().isEmpty(),
   ],
   createPlace
+);
+router.patch(
+  "/:pid",
+  [check("title").not().isEmpty(), check("description").isLength({ min: 5 })],
+  updatePlace
 );
 module.exports = router;
