@@ -73,7 +73,7 @@ const signup = async (req, res, next) => {
     );
     return next(error);
   }
-
+  console.log("Hello");
   let token;
   try {
     token = jwt.sign(
@@ -139,7 +139,7 @@ const login = async (req, res, next) => {
   try {
     token = jwt.sign(
       { userId: existingUser.id, email: existingUser.email },
-      process.env.JWT_KEY,
+      process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
   } catch (err) {
