@@ -12,6 +12,8 @@ const checkAuth = require("../middleware/check-auth");
 
 const router = express.Router();
 router.use(checkAuth);
+
+router.get("/user/:uid", getPlacesByUserId);
 router.post(
   "/",
   fileUpload.single("image"),
