@@ -14,6 +14,9 @@ const router = express.Router();
 router.use(checkAuth);
 
 router.get("/user/:uid", getPlacesByUserId);
+router.get("/:pid", getPlaceById);
+
+router.delete("/:pid", placesControllers.deletePlace);
 router.post(
   "/",
   fileUpload.single("image"),

@@ -16,7 +16,7 @@ const createPlace = async (req, res, next) => {
   }
 
   const { title, description, address, coordinates } = req.body;
-  console.log(coordinates);
+
   const createdPlace = Place.create({
     title,
     description,
@@ -60,7 +60,30 @@ const createPlace = async (req, res, next) => {
 
   res.status(201).json({ place: createdPlace });
 };
-const getPlaceById = () => {};
+const getPlaceById = async (req, res, next) => {
+  const placeId = req.params.pid;
+
+  let place;
+  try {
+    place = await Place.findById(placeId);
+  } catch (err) {
+    const error = new HttpError(
+      "Something went wrong, could not find a place.",
+      500
+    );
+    return next(error);
+  }
+
+  if (!place) {
+    const error = new HttpError(
+      "Could not find place for the provided id.",
+      404
+    );
+    return next(error);
+  }
+
+  res.json({ place: place.toObject({ getters: true }) });
+};
 
 const getPlacesByUserId = async (req, res, next) => {
   const userId = req.params.uid;
@@ -89,7 +112,56 @@ const getPlacesByUserId = async (req, res, next) => {
   });
 };
 
-const deletePlace = () => {};
+const deletePlace = async (req, res, next) => {
+  const placeId = req.params.pid;
+
+  let place;
+  try {
+    place = await Place.findById(placeId).populate("creator");
+  } catch (err) {
+    const error = new HttpError(
+      "Something went wrong, could not delete place.",
+      500
+    );
+    return next(error);
+  }
+
+  if (!place) {
+    const error = new HttpError("Could not find place for this id.", 404);
+    return next(error);
+  }
+
+  if (place.creator.id !== req.userData.userId) {
+    const error = new HttpError(
+      "You are not allowed to delete this place.",
+      401
+    );
+    return next(error);
+  }
+
+  const imagePath = place.image;
+
+  try {
+    const sess = await mongoose.startSession();
+    sess.startTransaction();
+    await place.remove({ session: sess });
+    place.creator.places.pull(place);
+    await place.creator.save({ session: sess });
+    await sess.commitTransaction();
+  } catch (err) {
+    const error = new HttpError(
+      "Something went wrong, could not delete place.",
+      500
+    );
+    return next(error);
+  }
+
+  fs.unlink(imagePath, (err) => {
+    console.log(err);
+  });
+
+  res.status(200).json({ message: "Deleted place." });
+};
 
 module.exports = {
   createPlace,
