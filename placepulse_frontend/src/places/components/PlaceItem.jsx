@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import Card from "../../shared/components/UI/Card";
 import Button from "../../shared/components/FormElements/Button";
 import "./PlaceItem.css";
 import Map from "../../shared/components/UI/Map";
 import Modal from "../../shared/components/UI/Modal";
+import AuthContext from "../../shared/context/auth-context";
 
 const PlaceItem = (props) => {
+  const { isLoggedIn } = useContext(AuthContext);
   const [showMap, setShowMap] = useState(false);
 
   const showMapHandler = () => {
@@ -46,8 +48,8 @@ const PlaceItem = (props) => {
             <Button inverse onClick={showMapHandler}>
               View on Map
             </Button>
-            <Button to={`/places/${props.id}`}>Edit</Button>
-            <Button danger>Delete</Button>
+            {isLoggedIn && <Button to={`/places/${props.id}`}>Edit</Button>}
+            {isLoggedIn && <Button danger>Delete</Button>}
           </div>
         </Card>
       </li>
