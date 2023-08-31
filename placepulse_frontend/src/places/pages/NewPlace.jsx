@@ -28,7 +28,6 @@ const NewPlace = () => {
   );
   const formSubmissionHandler = (event) => {
     event.preventDefault();
-    console.log(formState.inputs);
   };
   return (
     <form className="place-form" onSubmit={formSubmissionHandler}>
