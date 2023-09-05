@@ -14,7 +14,7 @@ import { useForm } from "../../shared/hooks/form-hook";
 import "./Auth.css";
 import LoadingSpinner from "../../shared/components/UI/LoadingSpinner";
 import ErrorModal from "../../shared/components/UI/ErrorModal";
-
+import { useHttp } from "../../shared/hooks/http-hook";
 // import SignupImage from "../../assets/Images/S.png";
 
 const Auth = () => {
@@ -37,39 +37,33 @@ const Auth = () => {
   );
 
   const { login } = useContext(AuthContext);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+
   const [isLoginMode, setLoginMode] = useState(true);
 
   const switchModeHandler = () => {
     setLoginMode(!isLoginMode);
   };
+  const { clearError, sendRequest, isLoading, error } = useHttp();
 
   const authSubmitHandler = async (event) => {
     event.preventDefault();
     if (isLoginMode) {
       try {
-        setIsLoading(true);
-        const response = await fetch("http://localhost:90/api/users/login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
+        await sendRequest(
+          "http://localhost:90/api/users/login",
+          "POST",
+          JSON.stringify({
             email: formState.inputs.email.value,
             password: formState.inputs.password.value,
           }),
-        });
-        const responseData = await response.json();
+          {
+            "Content-Type": "application/json",
+          }
+        );
 
-        if (!response.ok) {
-          throw new Error(responseData.message);
-        }
-        setIsLoading(false);
         login();
       } catch (error) {
-        setIsLoading(false);
-        setError(error.message);
+        console.log(error);
       }
     } else {
       console.log("Hello");
@@ -100,14 +94,10 @@ const Auth = () => {
     }
   };
 
-  const errorHandler = () => {
-    setError(null);
-  };
-
   return (
     <>
       {isLoading && <LoadingSpinner asOverlay />}
-      {error && <ErrorModal error={error} onClear={errorHandler} />}
+      {error && <ErrorModal error={error} onClear={clearError} />}
       <Card className="authentication">
         <h2>Login Required</h2>
         <hr />
