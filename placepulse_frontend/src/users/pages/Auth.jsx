@@ -1,5 +1,5 @@
 import { useState, useContext } from "react";
-import axios from "axios";
+
 import Card from "../../shared/components/UI/Card";
 import Input from "../../shared/components/FormElements/Input";
 import Button from "../../shared/components/FormElements/Button";
@@ -14,6 +14,8 @@ import { useForm } from "../../shared/hooks/form-hook";
 import "./Auth.css";
 import LoadingSpinner from "../../shared/components/UI/LoadingSpinner";
 import ErrorModal from "../../shared/components/UI/ErrorModal";
+
+// import SignupImage from "../../assets/Images/S.png";
 
 const Auth = () => {
   const [formState, inputHandler] = useForm(
@@ -48,58 +50,18 @@ const Auth = () => {
     if (isLoginMode) {
       try {
         setIsLoading(true);
-        const response = await axios.post(
-          "http://localhost:90/api/users/login",
-          {
+        const response = await fetch("http://localhost:90/api/users/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
             email: formState.inputs.email.value,
             password: formState.inputs.password.value,
-          }
-        );
-
-        const responseData = await response.data;
-        console.log(responseData);
-
-        if (response.status !== 200) {
-          throw new Error(responseData);
-        }
-        setIsLoading(false);
-        login();
-
-        //   const response = await fetch("http://localhost:90/api/users/login", {
-        //     method: "POST",
-        //     headers: {
-        //       "Content-Type": "application/json",
-        //     },
-        //     body: JSON.stringify({
-        //       email: formState.inputs.email.value,
-        //       password: formState.inputs.password.value,
-        //     }),
-        //   });
-        //   console.log(response);
-        //   const responseData = await response.json();
-        //   console.log(responseData);
-        //   if (!response.ok) {
-        //     throw new Error(responseData.message);
-        //   }
-        //   setIsLoading(false);
-        //   login();
-      } catch (error) {
-        setIsLoading(false);
-        setError(error.message);
-      }
-    } else {
-      try {
-        setIsLoading(true);
-        const response = await axios.post(
-          "http://localhost:90/api/users/signup",
-          {
-            name: formState.inputs.name.value,
-            email: formState.inputs.email.value,
-            password: formState.inputs.password.value,
-          }
-        );
+          }),
+        });
         const responseData = await response.json();
-        console.log(responseData);
+
         if (!response.ok) {
           throw new Error(responseData.message);
         }
@@ -107,8 +69,34 @@ const Auth = () => {
         login();
       } catch (error) {
         setIsLoading(false);
-        setError(error.message || "Something went wrong");
+        setError(error.message);
       }
+    } else {
+      console.log("Hello");
+      // try {
+      //   const response = await fetch("http://localhost:90/api/users/signup", {
+      //     method: "POST",
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //     body: JSON.stringify({
+      //       name: formState.inputs.name.value,
+      //       email: formState.inputs.email.value,
+      //       password: formState.inputs.password.value,
+      //       image: "S.png",
+      //     }),
+      //   });
+      //   const responseData = await response.json();
+
+      //   if (!response.ok) {
+      //     throw new Error(responseData.message);
+      //   }
+      //   setIsLoading(false);
+      //   login();
+      // } catch (error) {
+      //   setIsLoading(false);
+      //   setError(error.message || "Something went wrong");
+      // }
     }
   };
 
@@ -167,3 +155,22 @@ const Auth = () => {
 };
 
 export default Auth;
+
+//   const response = await fetch("http://localhost:90/api/users/login", {
+//     method: "POST",
+//     headers: {
+//       "Content-Type": "application/json",
+//     },
+//     body: JSON.stringify({
+//       email: formState.inputs.email.value,
+//       password: formState.inputs.password.value,
+//     }),
+//   });
+//   console.log(response);
+//   const responseData = await response.json();
+//   console.log(responseData);
+//   if (!response.ok) {
+//     throw new Error(responseData.message);
+//   }
+//   setIsLoading(false);
+//   login();

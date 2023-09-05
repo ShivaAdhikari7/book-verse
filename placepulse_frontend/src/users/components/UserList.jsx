@@ -18,7 +18,7 @@ const UserList = ({ items }) => {
           key={user.id}
           id={user.id}
           image={user.image}
-          placeCount={user.places}
+          placeCount={user.places.length}
           name={user.name}
         />
       ))}
